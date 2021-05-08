@@ -72,12 +72,20 @@ class CalcController {
 
 		this._lastOperator = this.getLastItem();
 
+		console.log("Calc. arriving operation:" + this._operation +
+		"\nOperation length: " + this._operation.length);
+
+		if (this._operation.length < 3) {
+			let firstItem = this._operation[0];
+			this._operation = [firstItem, this._lastOperator, this._lastNumber];
+        }
+
 		if (this._operation.length > 3) {
 			last = this._operation.pop();
 			this._lastNumber = this.getResult();
 		}
-		else if (this._operation == 3) {
-			this._lastNumber = this.getLastItem();
+		else if (this._operation.length == 3) {
+			this._lastNumber = this.getLastItem(false);
         }
 
 		let result = this.getResult();
@@ -90,6 +98,9 @@ class CalcController {
 
 			if (last) this._operation.push(last);
         }
+
+		console.log("lastOperator: " + this._lastOperator);
+		console.log("lastNumber: " + this._lastNumber);
 
 		this.setLastNumberToDisplay();
 	}
@@ -114,6 +125,10 @@ class CalcController {
             }
 
 		}
+
+		if (!lastItem) {
+			lastItem = (isOperator) ? this._lastOperator : this._lastNumber;
+        }
 
 		return lastItem;
     }
