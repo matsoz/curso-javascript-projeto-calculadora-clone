@@ -12,10 +12,78 @@ class CalcController {
 		this._currentDate;
 		this.initialize();
 		this.initButtonEvents();
+		this.initKeyboard();
 	}
 
 	initialize() {
 		this.setDisplayDateTime();
+		this.pasteFromClipboard();
+	}
+
+	copyToClipboard() {
+		let input = document.createElement('input'); // Create HTML element
+		input.value = this.displayCalc; // Get displayCalc to the element
+		document.body.appendChild(input); // Append new element to HTML
+		input.select(); 
+		document.execCommand("Copy");
+		input.remove(); // Remove from appearing
+	}
+
+	pasteFromClipboard() { //Add a paste event listener
+		document.addEventListener('paste', e => {
+			let text = e.clipboardData.getData('Text');
+			this.displayCalc = parseFloat(text);
+			
+		});
+    }
+
+	initKeyboard(){
+		document.addEventListener('keyup', e => {
+
+			console.log("Keyboard hit!" + e.key);
+
+			switch (e.key) {
+				case 'Escape':
+					this.clearAll();
+					break;
+				case 'Backspace':
+					this.clearEntry();
+					break;
+				case '+':
+				case '-':
+				case '/':
+				case '*':
+				case '%':
+					this.addOperation(e.key);
+					break;
+				case 'Enter':
+				case '=':
+					this.calc();
+					break;
+				case '.':
+				case ',':
+					this.addDot();
+					break;
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+				case '0':
+					this.addOperation(parseInt(e.key));
+					break;
+				case 'c':
+					if(e.ctrlKey) this.copyToClipboard();
+					break;
+			}
+
+
+		});
 	}
 
 	addEventListenerAll(element, events, func) {
